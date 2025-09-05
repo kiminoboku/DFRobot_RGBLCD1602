@@ -28,7 +28,7 @@ colorB = 0
 # -----------------------------------------
 #   LCD1602 RGB Module  |  V2.0  | 0x2D   |
 # -----------------------------------------
-lcd=DFRobot_RGBLCD1602(rgb_addr=0x60,col= 16,row = 2)                               #create LCD object,specify col and row
+lcd=DFRobot_RGBLCD1602(rgb_addr=0x2D,col= 16,row = 2)                               #create LCD object,specify col and row
 
 '''
   @brief set RGB
