@@ -67,7 +67,6 @@ class DFRobot_RGBLCD1602:
     self._col = col
     self.smbus = smbus.SMBus(1)
     self.RGB_ADDRESS = rgb_addr
-    print("LCD _row=%d _col=%d"%(self._row,self._col))
     if self.RGB_ADDRESS == 0x60:
       self.smbus.write_byte_data(self.RGB_ADDRESS, REG_MODE1, 1)
       self.REG_RED    =     0x04
