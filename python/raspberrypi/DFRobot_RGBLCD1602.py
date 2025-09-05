@@ -156,10 +156,9 @@ class DFRobot_RGBLCD1602:
       @brief output data to LCD to display
       @param arg output data
     '''
-    if(isinstance(arg,int)):
-      arg=str(arg)
+    arg=str(arg)
 
-    for x in bytearray(arg,'utf-8'):
+    for x in bytearray(arg, 'utf-8'):
       self.write(x)
 
   def home(self):
