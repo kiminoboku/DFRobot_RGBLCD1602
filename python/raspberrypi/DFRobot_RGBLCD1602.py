@@ -9,8 +9,7 @@
   @url https://github.com/DFRobot/DFRobot_RGBLCD1602
 '''
 import time
-import sys
-import wiringpi
+import smbus
 
 LCD_ADDRESS   =  (0x7c>>1)
 
@@ -66,30 +65,26 @@ class DFRobot_RGBLCD1602:
     #self.i2c=i2c
     self._row = row
     self._col = col
+    self.smbus = smbus.SMBus(1)
     self.RGB_ADDRESS = rgb_addr
     print("LCD _row=%d _col=%d"%(self._row,self._col))
-    self.LCD = wiringpi.wiringPiI2CSetup(LCD_ADDRESS)
     if self.RGB_ADDRESS == 0x60:
-      self.RGB = wiringpi.wiringPiI2CSetup(0x60)
-      wiringpi.wiringPiI2CWriteReg8(self.RGB,REG_MODE1, 1)
-      self.REG_RED    =     0x04      
+      self.smbus.write_byte_data(self.RGB_ADDRESS, REG_MODE1, 1)
+      self.REG_RED    =     0x04
       self.REG_GREEN  =     0x03
       self.REG_BLUE   =     0x02
       self.REG_ONLY   =     0x02
     elif self.RGB_ADDRESS == (0x60>>1) :
-      self.RGB = wiringpi.wiringPiI2CSetup((0x60>>1))
       self.REG_RED    =     0x06
       self.REG_GREEN  =     0x07
       self.REG_BLUE   =     0x08
       self.REG_ONLY   =     0x08
     elif self.RGB_ADDRESS == (0x6B) :
-      self.RGB = wiringpi.wiringPiI2CSetup(0x6B)
       self.REG_RED    =     0x06
       self.REG_GREEN  =     0x05
       self.REG_BLUE   =     0x04
       self.REG_ONLY   =     0x04
     elif self.RGB_ADDRESS == (0x2D) :
-      self.RGB = wiringpi.wiringPiI2CSetup(0x2D)
       self.REG_RED    =     0x01
       self.REG_GREEN  =     0x02
       self.REG_BLUE   =     0x03
@@ -105,7 +100,7 @@ class DFRobot_RGBLCD1602:
     b=bytearray(2)
     b[0]=0x40
     b[1]=data
-    wiringpi.wiringPiI2CWriteReg8(self.LCD,0x40,data)
+    self.smbus.write_i2c_block_data(LCD_ADDRESS, 0x40, data)
 
 
   def set_RGB(self,r,g,b):
@@ -256,7 +251,7 @@ class DFRobot_RGBLCD1602:
     location &= 0x7  # we only have 8 locations 0-7
     self._command(LCD_SETCGRAMADDR | (location << 3))
     for i in range(0,8):
-      wiringpi.wiringPiI2CWriteReg8(self.LCD,0x40,charmap[i])
+      self.smbus.write_byte_data(LCD_ADDRESS, 0x40, charmap[i])
 
   def set_backlight(self,mode):
     '''
@@ -371,7 +366,7 @@ class DFRobot_RGBLCD1602:
     b=bytearray(2)
     b[0]=0x80
     b[1]=cmd
-    wiringpi.wiringPiI2CWriteReg8(self.LCD,0x80,cmd)
+    self.smbus.write_byte_data(LCD_ADDRESS, 0x80, cmd)
 
   def _set_reg(self,reg,data):
     '''
@@ -381,4 +376,4 @@ class DFRobot_RGBLCD1602:
     '''
     b=bytearray(1)
     b[0]=data
-    wiringpi.wiringPiI2CWriteReg8(self.RGB,reg,data)
+    self.smbus.write_byte_data(self.RGB_ADDRESS, reg, data)
