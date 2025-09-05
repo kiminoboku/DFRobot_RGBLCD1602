@@ -100,7 +100,7 @@ class DFRobot_RGBLCD1602:
     b=bytearray(2)
     b[0]=0x40
     b[1]=data
-    self.smbus.write_i2c_block_data(LCD_ADDRESS, 0x40, data)
+    self.smbus.write_byte_data(LCD_ADDRESS, 0x40, data)
 
 
   def set_RGB(self,r,g,b):
